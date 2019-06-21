@@ -25,6 +25,8 @@
 12. [确定按钮-等待中](#确定按钮-等待中)
 13. [按钮事件](#按钮事件)
 14. [开关事件](#开关事件)
+15. [隐藏头尾](#隐藏头尾)
+14. [等待中](#等待中)
 
 #### 四种信息提示对话框
 
@@ -226,14 +228,19 @@ Dialog({
 
 #### 隐藏头尾
 ```js
+// 隐藏标题
 Dialog({
     content: "内容",
     showTitle: false
 });
+
+// 隐藏按钮
 Dialog({
     content: "内容",
     showButton: false
 });
+
+// 隐藏标题和按钮
 Dialog({
     content: "内容",
     showTitle: false,
@@ -245,6 +252,8 @@ Dialog({
 #### 等待中
 ```js
 Dialog.waiting( "处理中，请等待..." );
+
+// 倒计时效果
 Dialog.waiting(function ( $text ) {
     var timer = null;
     var num = 6;
