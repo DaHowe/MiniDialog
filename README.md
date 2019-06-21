@@ -39,6 +39,24 @@ Dialog.error( "标题", "内容" );
 Dialog.info( "标题", "内容" ).ok(function () {
     alert( "确定" );    
 })
+Dialog.info( "info 对话框", "内容区域" ).okNotClose().ok(function () {
+    window.setTimeout(function () {
+        Dialog.close();
+    }, 3000)
+});
+Dialog.info( "info 对话框", "内容区域" ).okNotClose().ok(function ( okBtn ) {
+
+    // 改变按钮文字
+    okBtn.querySelector( "span" ).textContent = "3 秒后关闭...";
+	
+    // "mini-dialog-ok-disabled" 是内置的 class 可以使按钮不可再点击
+    okBtn.classList.add( "mini-dialog-ok-disabled" );
+	
+    // 3 秒后关闭对话框
+    window.setTimeout(function () {
+        Dialog.close();
+    }, 3000)
+});
 ```
 
 #### 快捷方式
