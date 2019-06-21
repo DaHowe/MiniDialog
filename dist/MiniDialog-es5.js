@@ -1,8 +1,10 @@
 /*!
- *  MiniDialog v1.0.0
+ *  MiniDialog v1.0.1
  *  Copyright (C) 2019, ZhaoGang
  *  Released under the MIT license.
  */
+
+"use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -20,7 +22,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 	"use strict";
 
 	var UA = navigator.userAgent.toLowerCase(),
-	    Mobile = !!(UA.match(/(ios|iphone|ipod|ipad|mobile|android)/) && "ontouchend" in document),
 	    IE11 = UA.match("trident");
 
 	// 获取 DOM
@@ -101,7 +102,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 	};
 
 	// 对话框样式
-	var DialogCSS = "\n\t\tbody.mini-dialog-body-noscroll{padding-right:17px;position:relative;height:100%;overflow:hidden}\n\t\t.mini-dialog-noselect{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}\n\t\t.mini-dialog-container{position:fixed;top:0;left:0;width:100%;height:100%;z-index:2147483580;pointer-events:none}\n\t\t.mini-dialog-container *{-webkit-tap-highlight-color:transparent;margin:0;padding:0}\n\t\t.mini-dialog-container-top{z-index:2147483584}\n\t\t.mini-dialog-mask{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);pointer-events:auto}\n\t\t.mini-dialog-mask-show{animation:MiniDialogMaskShow .35s;animation-fill-mode:forwards}\n\t\t.mini-dialog-mask-hide{animation:MiniDialogMaskHide .35s;animation-fill-mode:forwards}\n\t\t.mini-dialog-wrapper{position:absolute;top:50%;left:50%;background:#fff;overflow:hidden;transform:translate(-50%,-50%);box-shadow:rgba(0,0,0,.12) 0 0 12px;pointer-events:auto}\n\t\t.mini-dialog-wrapper-fullscreen{width:100%!important;height:100%!important;border-radius:0!important}\n\t\t.mini-dialog-wrapper-show{animation:MiniDialogWrapperShow .35s;animation-fill-mode:forwards}\n\t\t.mini-dialog-wrapper-hide{animation:MiniDialogWrapperHide .35s;animation-fill-mode:forwards}\n\t\t.mini-dialog-header{overflow:hidden;border-bottom:#e6e6e6 solid 1px}\n\t\t.mini-dialog-header-move{cursor:grab}\n\t\t.mini-dialog-header-move-ie{cursor:move}\n\t\t.mini-dialog-header>span{display:block;float:left;width:calc(100% - 65px);height:52px;line-height:52px;padding:0 15px;font-size:16px;font-weight:700;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}\n\t\t.mini-dialog-header>i{display:block;float:right;width:20px;height:20px;line-height:20px;margin:17px 13px 0 0;font-style:normal;text-align:center;cursor:pointer;opacity:.35;transition:.2s}\n\t\t.mini-dialog-header>i:hover{opacity:1}\n\t\t.mini-dialog-header-drag{cursor:move}\n\t\t.mini-dialog-main{position:relative;padding:15px 0;min-height:100px;font-size:14px;line-height:160%;overflow:auto;word-break:break-all;color:#292929;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}\n\t\t.mini-dialog-main>div{overflow:hidden;margin:0 15px}\n\t\t.mini-dialog-main>iframe,.mini-dialog-main>img{display:block;position:absolute;top:0;left:0;width:100%;height:100%}\n\t\t.mini-dialog-main.mini-dialog-mobile-main{padding:10px 0}\n\t\t.mini-dialog-main.mini-dialog-mobile-main>div{margin:0 10px}\n\t\t.mini-dialog-main:hover .mini-dialog-image-prev,.mini-dialog-main:hover .mini-dialog-image-next{opacity:1}\n\t\t.mini-dialog-image-prev,.mini-dialog-image-next{opacity:0;transition:.2s}\n\t\tdiv.mini-dialog-image-wrapper{position:absolute;top:0;left:0;width:100%;height:100%;margin:0}\n\t\t.mini-dialog-image-wrapper>div:first-child{position:absolute;top:0;left:0;height:100%;transition-property:transform;transition-duration:.8s;transition-timing-function:cubic-bezier(.57,0,.375,1)}\n\t\t.mini-dialog-image-wrapper img{display:block;float:left}\n\t\tdiv.mini-dialog-image-next,div.mini-dialog-image-prev{width:40px;height:40px;background-image:url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNTU1NzI0MjA4NjA5IiBjbGFzcz0iaWNvbiIgc3R5bGU9IiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjIyOTAiIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMjgiIGhlaWdodD0iMjgiPjxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PC9zdHlsZT48L2RlZnM+PHBhdGggZD0iTTY3MC42NzY5MjkgNzc3LjU5Mjk4NCA0MDMuNjI3NzggNTEzLjM2MjAyMWwyNjUuMzIwNzg1LTI2OC4xNDYxMzNjMTEuNzc2MjA4LTExLjc3NTE4NCAxMS43MzQyNTItMzAuOTA4OTY0LTAuMDkxMDc0LTQyLjczNDI5bC0wLjAwMTAyMyAwYy0xMS44MjUzMjYtMTEuODI2MzUtMzAuOTU4MDgyLTExLjg2NzI4Mi00Mi43MjgxNSAyLjkzMDc0OUwzNDMuMTAwMjQyIDQ4OC40NDA0MjFjLTMuODE3OTU1IDQuMjczMzI3LTguMjA1ODkyIDkuMzIxMjk2LTguOTMzNDYzIDEyLjA0NTMzNy00LjQ3MDgyNSAxMS4xMTIwODItMi4yMzI4NTQgMjQuNzY1MDMzIDYuNzEwODQyIDM1Ljk4NzYzMmwyODYuOTgyMTMgMjg2Ljk4MjEzYzExLjg3NTQ2OCA4Ljg0NzUwNSAzMS4wOTYyMjkgOC44OTM1NTQgNDIuOTIyNTc4LTIuOTMyNzk2QzY4Mi42MDY2MzMgODA4LjY5NjM3NiA2ODIuNTYwNTg0IDc4OS40NzY2MzkgNjcwLjY3NjkyOSA3NzcuNTkyOTg0eiIgcC1pZD0iMjI5MSIgZmlsbD0iI2ZmZmZmZiI+PC9wYXRoPjwvc3ZnPg==);background-color:rgba(0,0,0,.5);background-position:center;background-repeat:no-repeat;position:absolute;top:50%;border-radius:50%;cursor:pointer;margin-top:-20px}\n\t\t.mini-dialog-image-prev{left:15px}\n\t\t.mini-dialog-image-next{right:15px;transform:rotate(180deg)}\n\t\t.mini-dialog-footer{text-align:right;height:34px;padding:15px 0;border-top:#e6e6e6 solid 1px}\n\t\t.mini-dialog-footer>div{display:inline-block;font-size:14px;cursor:pointer;text-align:center;border:#e8e8e8 solid 1px;height:32px;line-height:32px;vertical-align:middle;border-radius:4px;padding:0 14px;transition:.2s}\n\t\tdiv.mini-dialog-ok{color:#fff;background:#19b6f8;border-color:#19b6f8;margin:0 15px 0 5px}\n\t\tdiv.mini-dialog-ok:hover{background:#08a0e0;border-color:#08a0e0}\n\t\tdiv.mini-dialog-cancel{color:#888;background:#fff}\n\t\tdiv.mini-dialog-cancel:hover{background:#fafafa}\n\t\tdiv.mini-dialog-shortcuts-ok{margin:-5px 20px 0 0}\n\t\tdiv.mini-dialog-ok-disabled{pointer-events:none;opacity:.5}\n\t\t.mini-dialog-ok i{display:inline-block;width:12px;height:12px;margin-right:5px;border-radius:50%;border:#fff solid 1px;border-left:#09f solid 1px;animation:MiniDialogLoading 1s linear infinite}\n\t\t.mini-dialog-autoclose{position:absolute;left:0;bottom:0;height:3px;background:#19b6f8;width:100%;transform:scaleX(0);transform-origin:left center;transition-property:transform;transition-timing-function:linear}\n\t\t.mini-dialog-autoclose-active{transform:scaleX(1)}\n\t\t.mini-dialog-shortcuts>i{display:block;float:left;width:30px;height:30px;margin:8px 0 0 10px;border-radius:50%;transform:scale(.9)}\n\t\t.mini-dialog-shortcuts>div{float:left;width:calc(100% - 60px);margin:8px 0 0 10px}\n\t\t.mini-dialog-shortcuts>div p{display:block;font-size:16px;font-weight:700;word-break:break-all;margin-top:3px}\n\t\t.mini-dialog-shortcuts>div div{font-size:14px;margin-top:5px;word-break:break-all}\n\t\t.mini-dialog-mask-animate-enter-active,.mini-dialog-mask-animate-leave-active{transition:opacity .35s}\n\t\t.mini-dialog-mask-animate-enter,.mini-dialog-mask-animate-leave-to{opacity:0}\n\t\t.mini-dialog-wrapper-animate-enter-active,.mini-dialog-wrapper-animate-leave-active{transition:.35s}\n\t\t.mini-dialog-wrapper-animate-enter,.mini-dialog-wrapper-animate-leave-to{transform:translate(-50%,-50%) scale(.85);opacity:0}\n\t\t@keyframes MiniDialogMaskShow{0%{opacity:0}100%{opacity:1}}\n\t\t@keyframes MiniDialogMaskHide{0%{opacity:1}100%{opacity:0}}\n\t\t@keyframes MiniDialogWrapperShow{0%{opacity:0;transform:translate(-50%,-50%) scale(.82)}100%{opacity:1;transform:translate(-50%,-50%) scale(1)}}\n\t\t@keyframes MiniDialogWrapperHide{0%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(.82)}}\n\t\t@keyframes MiniDialogLoading{0%{transform:translateY(2px) rotate(0) scale(.85)}100%{transform:translateY(2px) rotate(360deg) scale(.85)}}\n\t";
+	var DialogCSS = "\n\t\tbody.mini-dialog-body-noscroll{padding-right:17px;position:relative;height:100%;overflow:hidden}\n\t\t.mini-dialog-noselect{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}\n\t\t.mini-dialog-container{position:fixed;top:0;left:0;width:100%;height:100%;z-index:2147483580;pointer-events:none}\n\t\t.mini-dialog-container *{-webkit-tap-highlight-color:transparent;margin:0;padding:0}\n\t\t.mini-dialog-container-top{z-index:2147483584}\n\t\t.mini-dialog-mask{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);pointer-events:auto}\n\t\t.mini-dialog-mask-show{animation:MiniDialogMaskShow .35s;animation-fill-mode:forwards}\n\t\t.mini-dialog-mask-hide{animation:MiniDialogMaskHide .35s;animation-fill-mode:forwards}\n\t\t.mini-dialog-wrapper{position:absolute;top:50%;left:50%;background:#fff;overflow:hidden;transform:translate(-50%,-50%);box-shadow:rgba(0,0,0,.12) 0 0 12px;pointer-events:auto}\n\t\t.mini-dialog-wrapper-fullscreen{width:100%!important;height:100%!important;border-radius:0!important}\n\t\t.mini-dialog-wrapper-show{animation:MiniDialogWrapperShow .35s;animation-fill-mode:forwards}\n\t\t.mini-dialog-wrapper-hide{animation:MiniDialogWrapperHide .35s;animation-fill-mode:forwards}\n\t\t.mini-dialog-header{overflow:hidden;border-bottom:#e6e6e6 solid 1px}\n\t\t.mini-dialog-header-move{cursor:grab}\n\t\t.mini-dialog-header-move-ie{cursor:move}\n\t\t.mini-dialog-header>span{display:block;float:left;width:calc(100% - 65px);height:52px;line-height:52px;padding:0 15px;font-size:16px;font-weight:700;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}\n\t\t.mini-dialog-header>i{display:block;float:right;width:20px;height:20px;line-height:20px;margin:17px 13px 0 0;font-style:normal;text-align:center;cursor:pointer;opacity:.35;transition:.2s}\n\t\t.mini-dialog-header>i:hover{opacity:1}\n\t\t.mini-dialog-header-drag{cursor:move}\n\t\t.mini-dialog-main{position:relative;padding:15px 0;min-height:100px;font-size:14px;line-height:160%;overflow:auto;word-break:break-all;color:#292929;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}\n\t\t.mini-dialog-main>div{overflow:hidden;margin:0 15px}\n\t\t.mini-dialog-main>iframe,.mini-dialog-main>img{display:block;position:absolute;top:0;left:0;width:100%;height:100%}\n\t\t.mini-dialog-main.mini-dialog-mobile-main{padding:10px 0}\n\t\t.mini-dialog-main.mini-dialog-mobile-main>div{margin:0 10px}\n\t\t.mini-dialog-main:hover .mini-dialog-image-prev,.mini-dialog-main:hover .mini-dialog-image-next{opacity:1}\n\t\t.mini-dialog-waiting-wrapper{box-shadow:none;padding:0;background:rgba(0,0,0,.7);border-radius:4px}\n\t\t.mini-dialog-waiting-wrapper .mini-dialog-main{background:rgba(0,0,0,0)!important;min-height:0;color:#eee;font-size:13px;text-align:center;padding:10px}\n\t\t.mini-dialog-waiting-wrapper span{display:block;text-align:center;margin-top:8px}\n\t\t.mini-dialog-waiting-box{margin:0 auto!important;width:40px;height:40px;border-radius:50%;border:rgba(255,255,255,.4) solid 3px;border-left:#eee solid 3px;animation:MiniDialogWaiting 1s linear infinite}\n\t\t.mini-dialog-image-prev,.mini-dialog-image-next{opacity:0;transition:.2s}\n\t\tdiv.mini-dialog-image-wrapper{position:absolute;top:0;left:0;width:100%;height:100%;margin:0}\n\t\t.mini-dialog-image-wrapper>div:first-child{position:absolute;top:0;left:0;height:100%;transition-property:transform;transition-duration:.8s;transition-timing-function:cubic-bezier(.57,0,.375,1)}\n\t\t.mini-dialog-image-wrapper img{display:block;float:left}\n\t\tdiv.mini-dialog-image-next,div.mini-dialog-image-prev{width:40px;height:40px;background-image:url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNTU1NzI0MjA4NjA5IiBjbGFzcz0iaWNvbiIgc3R5bGU9IiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjIyOTAiIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMjgiIGhlaWdodD0iMjgiPjxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PC9zdHlsZT48L2RlZnM+PHBhdGggZD0iTTY3MC42NzY5MjkgNzc3LjU5Mjk4NCA0MDMuNjI3NzggNTEzLjM2MjAyMWwyNjUuMzIwNzg1LTI2OC4xNDYxMzNjMTEuNzc2MjA4LTExLjc3NTE4NCAxMS43MzQyNTItMzAuOTA4OTY0LTAuMDkxMDc0LTQyLjczNDI5bC0wLjAwMTAyMyAwYy0xMS44MjUzMjYtMTEuODI2MzUtMzAuOTU4MDgyLTExLjg2NzI4Mi00Mi43MjgxNSAyLjkzMDc0OUwzNDMuMTAwMjQyIDQ4OC40NDA0MjFjLTMuODE3OTU1IDQuMjczMzI3LTguMjA1ODkyIDkuMzIxMjk2LTguOTMzNDYzIDEyLjA0NTMzNy00LjQ3MDgyNSAxMS4xMTIwODItMi4yMzI4NTQgMjQuNzY1MDMzIDYuNzEwODQyIDM1Ljk4NzYzMmwyODYuOTgyMTMgMjg2Ljk4MjEzYzExLjg3NTQ2OCA4Ljg0NzUwNSAzMS4wOTYyMjkgOC44OTM1NTQgNDIuOTIyNTc4LTIuOTMyNzk2QzY4Mi42MDY2MzMgODA4LjY5NjM3NiA2ODIuNTYwNTg0IDc4OS40NzY2MzkgNjcwLjY3NjkyOSA3NzcuNTkyOTg0eiIgcC1pZD0iMjI5MSIgZmlsbD0iI2ZmZmZmZiI+PC9wYXRoPjwvc3ZnPg==);background-color:rgba(0,0,0,.5);background-position:center;background-repeat:no-repeat;position:absolute;top:50%;border-radius:50%;cursor:pointer;margin-top:-20px}\n\t\t.mini-dialog-image-prev{left:15px}\n\t\t.mini-dialog-image-next{right:15px;transform:rotate(180deg)}\n\t\t.mini-dialog-footer{text-align:right;height:34px;padding:15px 0;border-top:#e6e6e6 solid 1px}\n\t\t.mini-dialog-footer>div{display:inline-block;font-size:14px;cursor:pointer;text-align:center;border:#e8e8e8 solid 1px;height:32px;line-height:32px;vertical-align:middle;border-radius:4px;padding:0 14px;transition:.2s}\n\t\tdiv.mini-dialog-ok{color:#fff;background:#19b6f8;border-color:#19b6f8;margin:0 15px 0 5px}\n\t\tdiv.mini-dialog-ok:hover{background:#08a0e0;border-color:#08a0e0}\n\t\tdiv.mini-dialog-cancel{color:#888;background:#fff}\n\t\tdiv.mini-dialog-cancel:hover{background:#fafafa}\n\t\tdiv.mini-dialog-shortcuts-ok{margin:-5px 20px 0 0}\n\t\tdiv.mini-dialog-ok-disabled{pointer-events:none;opacity:.5}\n\t\t.mini-dialog-ok i{display:inline-block;width:12px;height:12px;margin-right:5px;border-radius:50%;border:#fff solid 1px;border-left:#09f solid 1px;animation:MiniDialogWaiting 1s linear infinite}\n\t\t.mini-dialog-autoclose{position:absolute;left:0;bottom:0;height:3px;background:#19b6f8;width:100%;transform:scaleX(0);transform-origin:left center;transition-property:transform;transition-timing-function:linear}\n\t\t.mini-dialog-autoclose-active{transform:scaleX(1)}\n\t\t.mini-dialog-shortcuts>i{display:block;float:left;width:30px;height:30px;margin:8px 0 0 10px;border-radius:50%;transform:scale(.9)}\n\t\t.mini-dialog-shortcuts>div{float:left;width:calc(100% - 60px);margin:8px 0 0 10px}\n\t\t.mini-dialog-shortcuts>div p{display:block;font-size:16px;font-weight:700;word-break:break-all;margin-top:3px}\n\t\t.mini-dialog-shortcuts>div div{font-size:14px;margin-top:5px;word-break:break-all}\n\t\t.mini-dialog-mask-animate-enter-active,.mini-dialog-mask-animate-leave-active{transition:opacity .35s}\n\t\t.mini-dialog-mask-animate-enter,.mini-dialog-mask-animate-leave-to{opacity:0}\n\t\t.mini-dialog-wrapper-animate-enter-active,.mini-dialog-wrapper-animate-leave-active{transition:.35s}\n\t\t.mini-dialog-wrapper-animate-enter,.mini-dialog-wrapper-animate-leave-to{transform:translate(-50%,-50%) scale(.85);opacity:0}\n\t\t@keyframes MiniDialogMaskShow{0%{opacity:0}100%{opacity:1}}\n\t\t@keyframes MiniDialogMaskHide{0%{opacity:1}100%{opacity:0}}\n\t\t@keyframes MiniDialogWrapperShow{0%{opacity:0;transform:translate(-50%,-50%) scale(.82)}100%{opacity:1;transform:translate(-50%,-50%) scale(1)}}\n\t\t@keyframes MiniDialogWrapperHide{0%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(.82)}}\n\t\t@keyframes MiniDialogWaiting{0%{transform:translateY(2px) rotate(0) scale(.85)}100%{transform:translateY(2px) rotate(360deg) scale(.85)}}\n\t";
 	var DialogStyle = "<style class=\"mini-dialog-css\">" + DialogCSS + "</style>";
 
 	// 对话框模板
@@ -130,8 +131,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		width: 500,
 		ok: {
 			text: "确定",
-			loading: false,
-			loadingText: "确定",
+			waiting: false,
+			waitingText: "确定",
 			notClose: false,
 			callback: function callback() {}
 		},
@@ -142,7 +143,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		},
 		afterOpen: function afterOpen() {},
 		afterClose: function afterClose() {},
-		SHORTCUTS: null
+		SHORTCUTS: null,
+		WAITING: null
 	};
 
 	// 整合参数
@@ -189,6 +191,12 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 		var opt = mergeParam(options || {});
 
+		if (opt.WAITING) {
+			opt.showTitle = false;
+			opt.showButton = false;
+			opt.width = "auto";
+		}
+
 		var isFullScreen = opt.fullscreen;
 		var dialogWidth = opt.width;
 
@@ -231,7 +239,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			dialogWidth = winWidth;
 		}
 		$wrapper.style.width = dialogWidth + "px";
-		if (lowerWidth && !isFullScreen) {
+		if (lowerWidth && !isFullScreen && !opt.WAITING) {
 			$wrapper.style.width = winWidth - 60 + "px";
 		}
 
@@ -423,6 +431,19 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			}
 		}
 
+		// 请等待
+		if (opt.WAITING) {
+			$wrapper.classList.add("mini-dialog-waiting-wrapper");
+			var waitingText = "";
+			if (Fn.type(opt.WAITING) === "string") {
+				waitingText = opt.WAITING;
+			}
+			$main.innerHTML = "<div class=\"mini-dialog-waiting-box\"></div><span>" + waitingText + "</span>";
+			if (Fn.type(opt.WAITING) === "function") {
+				opt.WAITING($(".mini-dialog-waiting-box + span"));
+			}
+		}
+
 		// 相关事件
 		if (opt.maskClose) {
 			$mask.onclick = function () {
@@ -442,16 +463,24 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			if (Fn.type(opt.ok.callback) === "function") {
 				opt.ok.callback($ok);
 			}
-			if (!opt.ok.loading && !opt.ok.notClose) {
+
+			// 三种情况下，点击确定按钮不会关闭对话框：
+			// 1. 在确定按钮上设置了 waiting 属性；
+			// 2. 在确定按钮上设置了 notClose 属性；
+			// 3. 针对四种信息提示类弹框调用了 okNotClose() 方法。
+			if (!opt.ok.waiting && !opt.ok.notClose && !$ok.classList.contains("mini-dialog-notclose")) {
 				Dialog.close($container, _parent);
 			}
-			if (opt.ok.loading) {
+
+			// 设置了 waiting 属性
+			// 在点击后会在按钮上出现 "加载中" 效果
+			if (opt.ok.waiting) {
 				Fn.prepend($ok, "<i></i>");
 				Fn.setCSS($ok, {
 					opacity: .5,
 					pointerEvents: "none"
 				});
-				$("span", $ok).textContent = opt.ok.loadingText;
+				$("span", $ok).textContent = opt.ok.waitingText;
 			}
 		};
 
@@ -536,6 +565,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		});
 	}
 
+	// 信息展示类弹框
 	Dialog.info = function (title, content) {
 		DialogShortcuts("info", title, content);return Dialog;
 	};
@@ -549,15 +579,41 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		DialogShortcuts("error", title, content);return Dialog;
 	};
 
+	// 请等待
+	Dialog.waiting = function () {
+		var text = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "请等待";
+
+		Dialog({
+			WAITING: text
+		});
+	};
+
+	// 专门针对信息展示类弹框的阻止确定按钮关闭对话框的方法
+	Dialog.okNotClose = function () {
+		var $ok = $(".mini-dialog-ok");
+		if ($ok) {
+			$ok.classList.add("mini-dialog-notclose");
+		}
+		return Dialog;
+	};
+
+	// 对话框的全局关闭方法
 	Dialog.close = function (target) {
 		var context = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : window;
 
 		var doc = context.document;
 
 		// 可关闭指定对话框或所有对话框
-		$$(target || ".mini-dialog-container", doc).forEach(function (el) {
+		var $target = $$(target || ".mini-dialog-container", doc);
+
+		if (!$target.length) {
+			return;
+		}
+
+		$target.forEach(function (el) {
 			var $wrapper = $(".mini-dialog-wrapper", el),
 			    $mask = $(".mini-dialog-mask", el);
+
 			$wrapper.classList.add("mini-dialog-wrapper-hide");
 			$wrapper.addEventListener("animationend", function () {
 
@@ -570,20 +626,40 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				Fn.remove(el);
 				$("body", doc).classList.remove("mini-dialog-body-noscroll");
 			});
+
 			if ($mask) {
 				$mask.classList.add("mini-dialog-mask-hide");
 			}
 		});
 	};
 
+	// 专门针对信息展示类弹框的确定按钮点击事件
 	Dialog.ok = function (callback) {
-		$(".mini-dialog-shortcuts-mark .mini-dialog-ok").addEventListener("click", function () {
-			$(".mini-dialog-shortcuts-mark").addEventListener("animationend", function () {
-				if (Fn.type(callback) === "function") {
-					callback();
+		var $shortcutsOK = $(".mini-dialog-shortcuts-mark .mini-dialog-ok");
+		if ($shortcutsOK) {
+			var callbackFn = Fn.type(callback) === "function";
+			$shortcutsOK.addEventListener("click", function () {
+
+				// 调用了 okNotClose 方法
+				// 此时点击确定按钮将不会关闭对话框
+				// 需手动在 callback 中调用 Dialog.close() 才能关闭
+				if ($shortcutsOK.classList.contains("mini-dialog-notclose")) {
+
+					// 确保只能点击一次
+					// 防止事件重复执行
+					$shortcutsOK.style.pointerEvents = "none";
+
+					// 执行 callback
+					callbackFn && callback($shortcutsOK);
+				} else {
+
+					// 正常关闭并在关闭动画结束后执行 callback
+					$(".mini-dialog-shortcuts-mark").addEventListener("animationend", function () {
+						callbackFn && callback();
+					});
 				}
 			});
-		});
+		}
 	};
 
 	return Dialog;

@@ -163,8 +163,8 @@ Dialog({
     title: "标题",
     content: "内容",
     ok: {
-        loading: true,
-        loadingText: "等一会",
+        waiting: true,
+        waitingText: "等一会",
         callback: function () {
             setTimeout(function () {
                 Dialog.close();
@@ -235,8 +235,8 @@ Dialog({
     width: 500,                     // 对话框宽度，单位：px
     ok: {
         text: "确定",                // 确定按钮的文字
-        loading: false,             // 点击确定按钮时，是否显示 loading 效果（此时将不会执行关闭对话框的操作）
-        loadingText: "确定",         // 显示 loading 效果时，确定按钮文字的变化
+        waiting: false,             // 点击确定按钮时，是否显示 waiting 效果（此时将不会执行关闭对话框的操作）
+        waitingText: "确定",         // 显示 waiting 效果时，确定按钮文字的变化
         notClose: false,            // 点击确定按钮是否关闭对话框
         callback: function () {}    // 点击确定按钮的回调函数
     },

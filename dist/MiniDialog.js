@@ -1,5 +1,5 @@
 /*!
- *  MiniDialog v1.0.0
+ *  MiniDialog v1.0.1
  *  Copyright (C) 2019, ZhaoGang
  *  Released under the MIT license.
  */
@@ -18,7 +18,6 @@
 	"use strict";
 
 	const UA = navigator.userAgent.toLowerCase(),
-		Mobile = !!( UA.match( /(ios|iphone|ipod|ipad|mobile|android)/ ) && "ontouchend" in document ),
 		IE11 = UA.match( "trident" );
 
 	// 获取 DOM
@@ -115,6 +114,10 @@
 		.mini-dialog-main.mini-dialog-mobile-main{padding:10px 0}
 		.mini-dialog-main.mini-dialog-mobile-main>div{margin:0 10px}
 		.mini-dialog-main:hover .mini-dialog-image-prev,.mini-dialog-main:hover .mini-dialog-image-next{opacity:1}
+		.mini-dialog-waiting-wrapper{box-shadow:none;padding:0;background:rgba(0,0,0,.7);border-radius:4px}
+		.mini-dialog-waiting-wrapper .mini-dialog-main{background:rgba(0,0,0,0)!important;min-height:0;color:#eee;font-size:13px;text-align:center;padding:10px}
+		.mini-dialog-waiting-wrapper span{display:block;text-align:center;margin-top:8px}
+		.mini-dialog-waiting-box{margin:0 auto!important;width:40px;height:40px;border-radius:50%;border:rgba(255,255,255,.4) solid 3px;border-left:#eee solid 3px;animation:MiniDialogWaiting 1s linear infinite}
 		.mini-dialog-image-prev,.mini-dialog-image-next{opacity:0;transition:.2s}
 		div.mini-dialog-image-wrapper{position:absolute;top:0;left:0;width:100%;height:100%;margin:0}
 		.mini-dialog-image-wrapper>div:first-child{position:absolute;top:0;left:0;height:100%;transition-property:transform;transition-duration:.8s;transition-timing-function:cubic-bezier(.57,0,.375,1)}
@@ -130,7 +133,7 @@
 		div.mini-dialog-cancel:hover{background:#fafafa}
 		div.mini-dialog-shortcuts-ok{margin:-5px 20px 0 0}
 		div.mini-dialog-ok-disabled{pointer-events:none;opacity:.5}
-		.mini-dialog-ok i{display:inline-block;width:12px;height:12px;margin-right:5px;border-radius:50%;border:#fff solid 1px;border-left:#09f solid 1px;animation:MiniDialogLoading 1s linear infinite}
+		.mini-dialog-ok i{display:inline-block;width:12px;height:12px;margin-right:5px;border-radius:50%;border:#fff solid 1px;border-left:#09f solid 1px;animation:MiniDialogWaiting 1s linear infinite}
 		.mini-dialog-autoclose{position:absolute;left:0;bottom:0;height:3px;background:#19b6f8;width:100%;transform:scaleX(0);transform-origin:left center;transition-property:transform;transition-timing-function:linear}
 		.mini-dialog-autoclose-active{transform:scaleX(1)}
 		.mini-dialog-shortcuts>i{display:block;float:left;width:30px;height:30px;margin:8px 0 0 10px;border-radius:50%;transform:scale(.9)}
@@ -145,7 +148,7 @@
 		@keyframes MiniDialogMaskHide{0%{opacity:1}100%{opacity:0}}
 		@keyframes MiniDialogWrapperShow{0%{opacity:0;transform:translate(-50%,-50%) scale(.82)}100%{opacity:1;transform:translate(-50%,-50%) scale(1)}}
 		@keyframes MiniDialogWrapperHide{0%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(.82)}}
-		@keyframes MiniDialogLoading{0%{transform:translateY(2px) rotate(0) scale(.85)}100%{transform:translateY(2px) rotate(360deg) scale(.85)}}
+		@keyframes MiniDialogWaiting{0%{transform:translateY(2px) rotate(0) scale(.85)}100%{transform:translateY(2px) rotate(360deg) scale(.85)}}
 	`;
 	const DialogStyle = `<style class="mini-dialog-css">${ DialogCSS }</style>`;
 
@@ -196,8 +199,8 @@
 		width: 500,
 		ok: {
 			text: "确定",
-			loading: false,
-			loadingText: "确定",
+			waiting: false,
+			waitingText: "确定",
 			notClose: false,
 			callback: () => {}
 		},
@@ -208,7 +211,8 @@
 		},
 		afterOpen: () => {},
 		afterClose: () => {} ,
-		SHORTCUTS: null
+		SHORTCUTS: null,
+		WAITING: null
 	};
 
 	// 整合参数
@@ -255,6 +259,12 @@
 
 		const opt = mergeParam( options || {} );
 
+		if ( opt.WAITING ) {
+			opt.showTitle = false;
+			opt.showButton = false;
+			opt.width = "auto";
+		}
+
 		const isFullScreen = opt.fullscreen;
 		let dialogWidth = opt.width;
 
@@ -297,7 +307,7 @@
 			dialogWidth = winWidth;
 		}
 		$wrapper.style.width = `${ dialogWidth }px`;
-		if ( lowerWidth && !isFullScreen ) {
+		if ( lowerWidth && !isFullScreen && !opt.WAITING ) {
 			$wrapper.style.width = `${ winWidth - 60 }px`;
 		}
 
@@ -499,6 +509,19 @@
 			}
 		}
 
+		// 请等待
+		if ( opt.WAITING ) {
+			$wrapper.classList.add( "mini-dialog-waiting-wrapper" );
+			let waitingText = "";
+			if ( Fn.type( opt.WAITING ) === "string" ) {
+				waitingText = opt.WAITING;
+			}
+			$main.innerHTML = `<div class="mini-dialog-waiting-box"></div><span>${ waitingText }</span>`;
+			if ( Fn.type( opt.WAITING ) === "function" ) {
+				opt.WAITING( $( ".mini-dialog-waiting-box + span" ) );
+			}
+		}
+
 		// 相关事件
 		if ( opt.maskClose ) {
 			$mask.onclick = () => Dialog.close( $container, _parent );
@@ -514,16 +537,24 @@
 			if ( Fn.type( opt.ok.callback ) === "function" ) {
 				opt.ok.callback( $ok );
 			}
-			if ( !opt.ok.loading && !opt.ok.notClose ) {
+
+			// 三种情况下，点击确定按钮不会关闭对话框：
+			// 1. 在确定按钮上设置了 waiting 属性；
+			// 2. 在确定按钮上设置了 notClose 属性；
+			// 3. 针对四种信息提示类弹框调用了 okNotClose() 方法。
+			if ( !opt.ok.waiting && !opt.ok.notClose && !$ok.classList.contains( "mini-dialog-notclose" ) ) {
 				Dialog.close( $container, _parent );
 			}
-			if ( opt.ok.loading ) {
+
+			// 设置了 waiting 属性
+			// 在点击后会在按钮上出现 "加载中" 效果
+			if ( opt.ok.waiting ) {
 				Fn.prepend( $ok, "<i></i>" );
 				Fn.setCSS($ok, {
 					opacity: .5,
 					pointerEvents: "none"
 				});
-				$( "span", $ok ).textContent = opt.ok.loadingText;
+				$( "span", $ok ).textContent = opt.ok.waitingText;
 			}
 		}
 
@@ -605,18 +636,43 @@
 		});
 	}
 
+	// 信息展示类弹框
 	Dialog.info = ( title, content ) => { DialogShortcuts( "info", title, content ); return Dialog; }
 	Dialog.success = ( title, content ) => { DialogShortcuts( "success", title, content ); return Dialog; }
 	Dialog.warn = ( title, content ) => { DialogShortcuts( "warn", title, content ); return Dialog; }
 	Dialog.error = ( title, content ) => { DialogShortcuts( "error", title, content ); return Dialog; }
 
+	// 请等待
+	Dialog.waiting = ( text = "请等待" ) => {
+		Dialog({
+			WAITING: text
+		});
+	}
+
+	// 专门针对信息展示类弹框的阻止确定按钮关闭对话框的方法
+	Dialog.okNotClose = () => {
+		const $ok = $( ".mini-dialog-ok" );
+		if ( $ok ) {
+			$ok.classList.add( "mini-dialog-notclose" );
+		}
+		return Dialog;
+	}
+
+	// 对话框的全局关闭方法
 	Dialog.close = ( target, context = window ) => {
 		const doc = context.document;
 
 		// 可关闭指定对话框或所有对话框
-		$$( target || ".mini-dialog-container", doc ).forEach( el => {
+		const $target = $$( target || ".mini-dialog-container", doc );
+		
+		if ( !$target.length ) {
+			return;
+		}
+
+		$target.forEach( el => {
 			const $wrapper = $( ".mini-dialog-wrapper", el ),
 				$mask = $( ".mini-dialog-mask", el );
+
 			$wrapper.classList.add( "mini-dialog-wrapper-hide" );
 			$wrapper.addEventListener("animationend", () => {
 
@@ -629,20 +685,40 @@
 				Fn.remove( el );
 				$( "body", doc ).classList.remove( "mini-dialog-body-noscroll" );
 			})
+
 			if ( $mask ) {
 				$mask.classList.add( "mini-dialog-mask-hide" );
 			}
 		})
 	}
 
+	// 专门针对信息展示类弹框的确定按钮点击事件
 	Dialog.ok = callback => {
-		$( ".mini-dialog-shortcuts-mark .mini-dialog-ok" ).addEventListener("click", () => {
-			$( ".mini-dialog-shortcuts-mark" ).addEventListener("animationend", () => {
-				if ( Fn.type( callback ) === "function" ) {
-					callback();
+		const $shortcutsOK = $( ".mini-dialog-shortcuts-mark .mini-dialog-ok" );
+		if ( $shortcutsOK ) {
+			const callbackFn = Fn.type( callback ) === "function";
+			$shortcutsOK.addEventListener("click", () => {
+
+				// 调用了 okNotClose 方法
+				// 此时点击确定按钮将不会关闭对话框
+				// 需手动在 callback 中调用 Dialog.close() 才能关闭
+				if ( $shortcutsOK.classList.contains( "mini-dialog-notclose" ) ) {
+
+					// 确保只能点击一次
+					// 防止事件重复执行
+					$shortcutsOK.style.pointerEvents = "none";
+					
+					// 执行 callback
+					callbackFn && callback( $shortcutsOK );
+				} else {
+
+					// 正常关闭并在关闭动画结束后执行 callback
+					$( ".mini-dialog-shortcuts-mark" ).addEventListener("animationend", () => {
+						callbackFn && callback();
+					})
 				}
 			})
-		})
+		}
 	}
 
 	return Dialog;
