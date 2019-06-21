@@ -223,6 +223,43 @@ Dialog({
     }
 });
 ```
+
+#### 隐藏头尾
+```js
+Dialog({
+    content: "内容",
+    showTitle: false
+});
+Dialog({
+    content: "内容",
+    showButton: false
+});
+Dialog({
+    content: "内容",
+    showTitle: false,
+    showButton: false,
+    maskClose: true
+});
+```
+
+#### 等待中
+```js
+Dialog.waiting( "处理中，请等待..." );
+Dialog.waiting(function ( $text ) {
+    var timer = null;
+    var num = 6;
+    var fn = function () {
+        num--;
+        $text.innerHTML = "处理中，请等待...<br>" + num;
+        if ( !num ) {
+            window.clearInterval( timer );
+            Dialog.close();
+        }
+    }
+    fn();
+    timer = window.setInterval( fn, 1000 );
+});
+```
 <br>
 
 ### 全部属性及默认值：
