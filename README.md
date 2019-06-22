@@ -11,7 +11,7 @@
 
 #### 代码示例：
 
-1. [四种信息展示对话框](#四种信息展示对话框)
+1. [基本信息展示](#基本信息展示)
 2. [快捷方式](#快捷方式)
 3. [常规配置](#常规配置)
 4. [自定义内容背景色](#自定义内容背景色)
@@ -28,7 +28,7 @@
 15. [隐藏头尾](#隐藏头尾)
 14. [等待中](#等待中)
 
-#### 四种信息展示对话框
+#### 基本信息展示
 
 ```js
 // 内容可选
@@ -282,8 +282,8 @@ Dialog({
     content: "",                    // 对话框内容（可传入 HTML 结构）
     contentBgColor: "#fff",         // 内容区域的背景色
     iframeContent: null,            // 嵌入 iframe 的配置项，有两个必填属性 { src, height }
-    videoContent: null,             // 嵌入图片的配置项，有两个必填属性 { src, height }
-    imageContent: null,             // 嵌入视频的配置项，有两个必属性 { src, height }，一个可选属性 { autoplay: true/false }
+    imageContent: null,             // 嵌入图片的配置项，有两个必填属性 { src, height }
+    videoContent: null,             // 嵌入视频的配置项，有两个必属性 { src, height }，一个可选属性 { autoplay: true/false }
     fullscreen: false,              // 全屏显示
     draggable: false,               // 可以拖动（设置此属性后，遮罩层将自动隐藏）
     maskClose: false,               // 点击遮罩层关闭对话框
