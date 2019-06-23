@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>MiniDialog - 等待中对话框</title>
+		<script src="MiniDialog.min.js"></script>
+	</head>
+	<body>
+	    
+        <!-- 示例按钮 -->
+        <button id="btn-1">对话框 - 1</button>
+        <button id="btn-2">对话框 - 2</button>
+
+        <script>
+            var $ = function ( selector ) {
+                return document.querySelector( selector );
+            }
+
+            // 基本的等待中效果
+            Dialog.waiting( "处理中，请等待..." );
+
+            // 添加倒计时效果
+            Dialog.waiting(function ( $text ) {
+                var timer = null;
+                var num = 6;
+                var fn = function () {
+                    num--;
+                    $text.innerHTML = "处理中，请等待...<br>" + num;
+                    if ( !num ) {
+                        window.clearInterval( timer );
+                        Dialog.close();
+                    }
+                }
+                fn();
+                timer = window.setInterval( fn, 1000 );
+            });
+        </script>
+
+	</body>
+</html>

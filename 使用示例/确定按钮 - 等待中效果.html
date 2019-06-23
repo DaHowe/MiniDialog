@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>MiniDialog - 确定按钮(等待中效果)</title>
+		<script src="MiniDialog.min.js"></script>
+	</head>
+	<body>
+	    
+        <!-- 示例按钮 -->
+        <button>打开对话框</button>
+
+        <script>
+            document.querySelector( "button" ).onclick = function () {
+                Dialog({
+                    title: "标题",
+                    content: "内容",
+                    ok: {
+
+                        // 一旦设置了 waiting: true
+                        // 则点击确定按钮后将不会正常自动关闭对话框
+                        // 需要在 callback 中手动调用 close 方法来关闭对话框
+                        waiting: true,
+
+                        // 按钮文字的变化（也可保持原有文字不变）
+                        waitingText: "等一会",
+
+                        // 执行回调
+                        callback: function () {
+
+                            // 3 秒后关闭对话框（模拟）
+                            window.setTimeout(function () {
+                                Dialog.close();
+                            }, 3000)
+                        }
+                    }
+                });
+            }
+        </script>
+
+	</body>
+</html>

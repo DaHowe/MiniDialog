@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>MiniDialog - 自动关闭</title>
+		<script src="MiniDialog.min.js"></script>
+	</head>
+	<body>
+	    
+        <!-- 示例按钮 -->
+        <button>打开对话框</button>
+
+        <script>
+            document.querySelector( "button" ).onclick = function () {
+                Dialog({
+                    title: "标题",
+                    content: "内容",
+
+                    // 5 秒后自动关闭对话框
+                    // 此设置会自动创建一个在对话框底部显示倒计时的进度条
+                    // 用来辅助提醒用户倒计时关闭操作
+                    autoClose: 5000
+
+                    // 如果不希望显示这个倒计时进度条
+                    // 可以增加设置 autoCloseEffect: false 来禁止显示进度条
+                });
+            }
+        </script>
+
+	</body>
+</html>

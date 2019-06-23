@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>MiniDialog - 开关事件</title>
+		<script src="MiniDialog.min.js"></script>
+	</head>
+	<body>
+	    
+        <!-- 示例按钮 -->
+        <button>打开对话框</button>
+
+        <script>
+            document.querySelector( "button" ).onclick = function () {
+                Dialog({
+                    title: "标题",
+                    content: "内容",
+                    afterOpen: function () {
+                        window.alert( "打开了对话框" );
+                    },
+                    afterClose: function () {
+                        window.alert( "关闭了对话框" );
+                    }
+                });
+            }
+        </script>
+
+	</body>
+</html>

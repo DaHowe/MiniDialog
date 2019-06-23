@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>MiniDialog - 信息展示类对话框(确定事件)</title>
+		<script src="MiniDialog.min.js"></script>
+	</head>
+	<body>
+	    
+        <!-- 示例按钮 -->
+        <button id="btn-1">打开对话框</button>
+        <button id="btn-2">打开对话框</button>
+        <button id="btn-3">打开对话框</button>
+
+        <script>
+            var $ = function ( selector ) {
+                return document.querySelector( selector );
+            }
+
+
+            // == 注：okNotClose() 和 ok() 只适用于 info,success,warn,error 这四种基本信息展示对话框 == //
+
+            
+            // 只添加回调事件
+            $( "#btn-1" ).onclick = function () {
+                Dialog.info( "标题" ).ok(function () {
+                    window.alert( "关闭了对话框" );
+                });
+            }
+
+            // 阻止对话框关闭并添加回调事件
+            // 在回调函数中手动调用 close 方法来关闭对话框
+            $( "#btn-2" ).onclick = function () {
+                Dialog.info( "标题" ).okNotClose().ok(function () {
+
+                    // 3 秒后关闭对话框（模拟）
+                    window.setTimeout(function () {
+                        Dialog.close();
+                    }, 3000)
+                });
+            }
+
+            // 还可以设置点击确定按钮后改变按钮的文字和状态
+            $( "#btn-3" ).onclick = function () {
+                Dialog.info( "标题" ).okNotClose().ok(function ( okBtn ) {
+
+                    // 改变按钮文字
+                    okBtn.querySelector( "span" ).textContent = "3 秒后关闭...";
+                    
+                    // "mini-dialog-ok-disabled" 是内置的 class 可以使按钮不可再点击
+                    okBtn.classList.add( "mini-dialog-ok-disabled" );
+                    
+                    // 3 秒后关闭对话框（模拟）
+                    window.setTimeout(function () {
+                        Dialog.close();
+                    }, 3000)
+                });
+            }
+        </script>
+
+	</body>
+</html>

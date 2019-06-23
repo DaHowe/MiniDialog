@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>MiniDialog - 嵌入图片</title>
+		<script src="MiniDialog.min.js"></script>
+	</head>
+	<body>
+	    
+        <!-- 示例按钮 -->
+        <button id="btn-1">对话框 - 1</button>
+        <button id="btn-2">对话框 - 2</button>
+
+        <script>
+            var $ = function ( selector ) {
+                return document.querySelector( selector );
+            }
+
+            // 嵌入一张图片
+            $( "#btn-1" ).onclick = function () {
+                Dialog({
+                    title: "标题",
+                    width: 800,
+                    
+                    // src 和 height 都是必填属性，不可省略
+                    imageContent: {
+                        src: "demo.jpg",
+                        height: 400
+                    },
+
+                    // 隐藏底部按钮（此处仅做为示例设置）
+                    showButton: false
+                });
+            }
+
+
+            // 嵌入一组图片（此时将自动开启轮播图模式）
+            $( "#btn-2" ).onclick = function () {
+                Dialog({
+                    width: 800,
+                    
+                    // src 和 height 都是必填属性，不可省略
+                    imageContent: {
+                        src: [ "1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg" ],
+                        height: 400
+                    },
+
+                    // 隐藏标题和底部按钮（此处仅做为示例设置）
+                    showTitle: false,
+                    showButton: false,
+
+                    // 点击遮罩层关闭对话框
+                    maskClose: true
+                });
+            }
+        </script>
+
+	</body>
+</html>

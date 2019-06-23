@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>MiniDialog - 全屏对话框</title>
+		<script src="MiniDialog.min.js"></script>
+	</head>
+	<body>
+	    
+        <!-- 示例按钮 -->
+        <button>打开对话框</button>
+
+        <script>
+            document.querySelector( "button" ).onclick = function () {
+                Dialog({
+                    title: "标题",
+                    content: "内容",
+                    fullscreen: true
+                });
+            }
+        </script>
+
+	</body>
+</html>

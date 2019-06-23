@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>MiniDialog - 信息展示类对话框</title>
+		<script src="MiniDialog.min.js"></script>
+	</head>
+	<body>
+	    
+        <!-- 第一组示例按钮 -->
+        <button id="info-1">Info 对话框</button>
+        <button id="success-1">Success 对话框</button>
+        <button id="warn-1">Warn 对话框</button>
+        <button id="error-1">Error 对话框</button>
+
+        <!-- 只显示对话框标题 -->
+        <script>
+            var $ = function ( selector ) {
+                return document.querySelector( selector );
+            }
+
+            $( "#info-1" ).onclick = function () {
+                Dialog.info( "Info 对话框" );
+            }
+            $( "#success-1" ).onclick = function () {
+                Dialog.success( "Success 对话框" );
+            }
+            $( "#warn-1" ).onclick = function () {
+                Dialog.warn( "Warn 对话框" );
+            }
+            $( "#error-1" ).onclick = function () {
+                Dialog.error( "Error 对话框" );
+            }
+        </script>
+
+
+
+
+        <!-- 第二组示例按钮 -->
+        <button id="info-2">Info 对话框</button>
+        <button id="success-2">Success 对话框</button>
+        <button id="warn-2">Warn 对话框</button>
+        <button id="error-2">Error 对话框</button>
+
+        <!-- 显示对话框标题和内容 -->
+        <script>
+            var $ = function ( selector ) {
+                return document.querySelector( selector );
+            }
+
+            $( "#info-2" ).onclick = function () {
+                Dialog.info( "Info 对话框", "辅助内容" );
+            }
+            $( "#success-2" ).onclick = function () {
+                Dialog.success( "Success 对话框", "辅助内容" );
+            }
+            $( "#warn-2" ).onclick = function () {
+                Dialog.warn( "Warn 对话框", "辅助内容" );
+            }
+            $( "#error-2" ).onclick = function () {
+                Dialog.error( "Error 对话框", "辅助内容" );
+            }
+        </script>
+
+	</body>
+</html>

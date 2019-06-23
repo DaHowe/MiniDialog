@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>MiniDialog - 可拖动的对话框</title>
+		<script src="MiniDialog.min.js"></script>
+	</head>
+	<body>
+	    
+        <!-- 示例按钮 -->
+        <button>打开对话框</button>
+
+        <script>
+            
+            // 可以多次点击按钮来创建多个对话框
+            // 只需要按住对话框的标题区域即可进行拖动
+            document.querySelector( "button" ).onclick = function () {
+                Dialog({
+                    title: "标题",
+                    content: "内容",
+                    draggable: true
+                });
+            }
+        </script>
+
+	</body>
+</html>
