@@ -206,7 +206,7 @@
 			callback: () => {}
 		},
 		afterOpen: () => {},
-		afterClose: () => {} ,
+		afterClose: () => {},
 		SHORTCUTS: null,
 		WAITING: null
 	};
