@@ -1,5 +1,5 @@
 /*!
- *  MiniDialog v1.0.1
+ *  MiniDialog v1.0.2
  *  Copyright (C) 2019, ZhaoGang
  *  Released under the MIT license.
  */
@@ -140,10 +140,6 @@
 		.mini-dialog-shortcuts>div{float:left;width:calc(100% - 60px);margin:8px 0 0 10px}
 		.mini-dialog-shortcuts>div p{display:block;font-size:16px;font-weight:700;word-break:break-all;margin-top:3px}
 		.mini-dialog-shortcuts>div div{font-size:14px;margin-top:5px;word-break:break-all}
-		.mini-dialog-mask-animate-enter-active,.mini-dialog-mask-animate-leave-active{transition:opacity .35s}
-		.mini-dialog-mask-animate-enter,.mini-dialog-mask-animate-leave-to{opacity:0}
-		.mini-dialog-wrapper-animate-enter-active,.mini-dialog-wrapper-animate-leave-active{transition:.35s}
-		.mini-dialog-wrapper-animate-enter,.mini-dialog-wrapper-animate-leave-to{transform:translate(-50%,-50%) scale(.85);opacity:0}
 		@keyframes MiniDialogMaskShow{0%{opacity:0}100%{opacity:1}}
 		@keyframes MiniDialogMaskHide{0%{opacity:1}100%{opacity:0}}
 		@keyframes MiniDialogWrapperShow{0%{opacity:0;transform:translate(-50%,-50%) scale(.82)}100%{opacity:1;transform:translate(-50%,-50%) scale(1)}}
