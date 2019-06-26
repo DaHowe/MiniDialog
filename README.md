@@ -11,7 +11,22 @@
 
 #### 最新版本：1.0.2
 
-#### 代码示例：
+#### 使用方法：
+
+```html
+只需一步，即：引入 MiniDialog.min.js 文件，如：
+
+<button type="button">打开对话框</button>
+
+<script src="MiniDialog.min.js"></script>
+<script>
+    document.querySelector( "button" ).onclick = function () {
+        Dialog.info( "欢迎使用 MiniDialog" );
+    }
+</script>
+```
+
+#### 用法示例：
 
 1. [基本信息展示](#基本信息展示)
 2. [快捷方式](#快捷方式)
